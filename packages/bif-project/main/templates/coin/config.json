@@ -1,0 +1,9 @@
+{
+  "language": "solidity",
+  "main": "./contracts/Coin.sol",
+  "deploy": "./build/contracts/Coin_meta.json",
+  "framework": "#framework",
+  "compilers": {
+    "solc": "v0.4.26"
+  }
+}

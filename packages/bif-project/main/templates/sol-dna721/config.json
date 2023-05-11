@@ -1,0 +1,8 @@
+{
+  "language": "solidity",
+  "main": "DNA721.sol",
+  "deploy": "build/contracts/DNA721_meta.json",
+  "compilers": {
+    "solc": "v0.4.26"
+  }
+}

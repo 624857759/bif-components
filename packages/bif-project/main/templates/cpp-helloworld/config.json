@@ -1,0 +1,9 @@
+{
+  "language": "cpp",
+  "main": "helloworld.cpp",
+  "deploy": "output.bin",
+  "compilers": {
+    "abi": "3.10.0",
+    "cdt": "3.10.0"
+  }
+}

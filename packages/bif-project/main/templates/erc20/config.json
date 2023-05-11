@@ -1,0 +1,8 @@
+{
+  "language": "solidity",
+  "main": "ERC20.sol",
+  "deploy": "build/contracts/TokenERC20_meta.json",
+  "compilers": {
+    "solc": "v0.4.26"
+  }
+}

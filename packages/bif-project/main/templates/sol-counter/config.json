@@ -1,0 +1,8 @@
+{
+  "language": "solidity",
+  "main": "Counter.sol",
+  "deploy": "build/contracts/Counter_meta.json",
+  "compilers": {
+    "solc": "v0.4.26"
+  }
+}

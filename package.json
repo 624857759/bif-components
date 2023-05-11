@@ -1,0 +1,16 @@
+{
+  "name": "@obsidians/bif-components",
+  "license": "GPL-3.0",
+  "private": true,
+  "engines": {
+    "node": "16"
+  },
+  "scripts": {
+    "build": "node init.js"
+  },
+  "workspaces": [
+    "packages/*",
+    "../electron-components/packages/*",
+    "../eth-components/packages/*"
+  ]
+}

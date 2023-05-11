@@ -1,0 +1,37 @@
+{
+  "name": "@obsidians/bif-sdk",
+  "version": "0.1.0",
+  "description": "bif sdk",
+  "author": "Phil <qft.gtr@gmail.com>",
+  "license": "GPL-3.0",
+  "browser": "src/index.js",
+  "main": "src/index.js",
+  "files": [
+    "src",
+    "main"
+  ],
+  "scripts": {},
+  "dependencies": {
+    "@obsidians/eth-network": "^0.3.0",
+    "@obsidians/eth-sdk": "^0.3.0",
+    "@obsidians/ipc": "^0.3.0",
+    "@obsidians/keypair": "^0.3.0",
+    "@obsidians/platform": "^0.3.0",
+    "@obsidians/redux": "^0.3.0",
+    "brdc-sjcl": "^1.0.9",
+    "randombytes": "^2.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.5",
+    "@babel/plugin-external-helpers": "^7.7.4",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/plugin-proposal-function-bind": "^7.7.4",
+    "@babel/preset-env": "^7.7.5",
+    "babel-eslint": "^10.1.0",
+    "cross-env": "^6.0.3"
+  },
+  "peerDependencies": {
+    "ethers": "^5.0.30",
+    "immutable": "^4.0.0-rc.12"
+  }
+}
