@@ -2,13 +2,18 @@ import React from 'react'
 
 import { DockerImageSelector } from '@obsidians/docker'
 import { BaseProjectManager } from '@obsidians/workspace'
+import platform from '@obsidians/platform'
 import compilerManager from '../compilerManager'
 
 export default () => {
   const [selected, onSelected] = React.useState('')
 
   React.useEffect(BaseProjectManager.effect(`settings:compilers.abi`, onSelected), [])
-  console.log(BaseProjectManager.instance.projectSettings)
+
+  if (platform.isWeb) {
+    return null
+  }
+
   return (
     <>
       <DockerImageSelector

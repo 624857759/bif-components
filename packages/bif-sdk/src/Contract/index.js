@@ -20,13 +20,20 @@ export default class Contract {
 		let args
 		let result
 		let input
-		if (override.ext === 'js') {
+		if (override.ext === 'js' ) {
 			args = json
 			input = JSON.stringify({
 				method,
 				params: json,
 				abicode: override.abicode
 			})
+		} else if (override.ext === 'cpp') {
+			args = json
+			input = {
+				method,
+				params: json,
+				abicode: override.abicode
+			}
 		} else {
 			let returnType
 			const action = override.abis.find(item => item.name === method)
@@ -47,24 +54,71 @@ export default class Contract {
 				contractAddress: this.address,
 				input
 			}
-			console.log(params)
+			console.log(params, 'contractQuery')
 			result = await this.instance.contractQuery(params)
+			console.log('contractQuery::', result)
 		} catch (e) {
 			throw utils.parseError(e)
 		}
 		return this.parseResult(result, method)
 	}
 
+	addslashes(string) {
+    return string.trim().replace(/\\/g, '\\\\').
+        replace(/\u0008/g, '\\b').
+        replace(/\t/g, '\\t').
+        replace(/\n/g, '\\n').
+        replace(/\f/g, '\\f').
+        replace(/\r/g, '\\r').
+        replace(/'/g, '\\\'').
+        replace(/"/g, '\\"');
+}
+
+	jsonzip(text, ii) {
+
+    if ((ii == 1 || ii == 3)) {
+        text = text.split("\n").join(" ");
+        var t = [];
+        var inString = false;
+        for (var i = 0, len = text.length; i < len; i++) {
+            var c = text.charAt(i);
+            if (inString && c === inString) {
+                if (text.charAt(i - 1) !== '\\') {
+                    inString = false;
+                }
+            } else if (!inString && (c === '"' || c === "'")) {
+                inString = c;
+            } else if (!inString && (c === ' ' || c === "\t")) {
+                c = '';
+            }
+            t.push(c);
+        }
+        text = t.join('');
+    }
+    if ((ii == 2 || ii == 3)) {
+        text = text.replace(/\\/g, "\\\\");
+    }
+    if (ii == 4) {
+        text = text.replace(/\\\\/g, "\\").replace(/\\\"/g, '\"');
+    }
+    return text;
+}
+
 	async execute(method, { json, obj, array }, override) {
-		console.log(method, arguments)
 		let args
 		let input
+		console.log(json)
+		const { abicode, ...restParams } = json
+		
+
 		if (override.ext === 'js' || override.ext === 'cpp') {
 			args = json
 			input = JSON.stringify({
 				method,
-				params: json
-			})
+				abicode,
+				params: restParams
+			}).replace(new RegExp("\\\\\"","gm"),"\"")
+
 		} else {
 			args = obj
 			input = JSON.stringify({
@@ -84,7 +138,7 @@ export default class Contract {
 			input,
 			// domainId: '0'
 		}
-		console.log(params)
+		console.log(params, 'params')
 		const res = await this.instance.contractInvoke(params)
 		const { success_count, errorCode, result } = res
 		let hash = result.hash
@@ -98,7 +152,6 @@ export default class Contract {
 		}
 		// return 
 		if (errorCode === 0) {
-			
 			let txSucceed = false
 			let status = 'SUCCESS'
 			let chain60s = 0
@@ -158,9 +211,9 @@ export default class Contract {
 					},
 					status: 'FAILED',
 					ts: moment().unix(),
-					... result.hash ? {
+					...result.hash ? {
 						txHash: result.hash
-					}: {}
+					} : {}
 				}
 			})
 			throw new Error(res.errorDesc)

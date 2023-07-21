@@ -12,15 +12,16 @@ export default props => {
   React.useEffect(BaseProjectManager.effect('settings:language', onChangeLanguage), [])
   React.useEffect(BaseProjectManager.effect('settings:compilers.abi', onSelected), [])
   
-  if (language === 'cpp') {
-    return <CppSelector />
-  } else if (language === 'solidity') {
-    return <SolcSelector />
-  } else if (language === 'go') {
-    return <GoSelector />
-  } else if (language === 'java') {
-    return <MavenSelector />
-  } else {
-    return null
-  }
+  return null
+  // if (language === 'cpp') {
+  //   return <CppSelector />
+  // } else if (language === 'solidity') {
+  //   return <SolcSelector />
+  // } else if (language === 'go') {
+  //   return <GoSelector />
+  // } else if (language === 'java') {
+  //   return <MavenSelector />
+  // } else {
+  //   return null
+  // }
 }

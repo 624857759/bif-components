@@ -79,7 +79,7 @@ class Tx {
               clearInterval(timer)
               try {
                 receipt = await this.client.getTransactionReceipt(hash)
-                console.log(receipt)
+
                 if (receipt.errorCode === 0) {
                   if (receipt.result.transactions[0].error_code === 100) {
                     errMsg = '余额不足'
@@ -91,7 +91,8 @@ class Tx {
                     const result = JSON.parse(receipt.result.transactions[0].error_desc)
                     resolve(result ? {
                       contractCreated: result[0].contract_address,
-                      codeHash: hash
+                      codeHash: hash,
+                      value: (receipt.result.transactions[0].actual_fee / 100000000)
                     } : {})
                   } else {
                     resolve({})
@@ -166,7 +167,6 @@ export class TransferTx extends Tx {
     if (errorCode === 0) {
       return result.hash
     } else {
-      // errorCode
       if (errorCode === 4) {
         throw new Error(`${params.from} 该地址不存在，请切换到账户所对应的网络。`)
       }
@@ -196,7 +196,7 @@ export class ContractTx extends Tx {
   }
 
   async sendTx() {
-    const contractName = this.tx.options.contractName || 's'
+    const contractName = this.tx.options.contractName
     let abi
     let constructorArgs
     let parametersStr
@@ -204,14 +204,12 @@ export class ContractTx extends Tx {
     if (this.tx.options.vmType === 1) {
       abi = this.tx.abi.output.abi
       constructorArgs = abi.find(item => item.type === 'constructor').inputs.map(item => item.type).join(',')
-      parametersStr = this.tx.parameters.filter(item => item !== "").map(item => `'${item}'`).join(',')
+      parametersStr = this.tx.parameters.filter(item => Boolean(item)).map(item => typeof item === 'string' ? `'${item}'`: item).join(',')
     }
     initInput = contractName ? JSON.stringify({ function: `${contractName.replace('_meta', '')}}(${constructorArgs})`, args: parametersStr }) : ''
 
     if (this.tx.options.vmType === 0) {
-      initInput = JSON.stringify({
-        params: this.tx.options.args
-      })
+      initInput = JSON.stringify(this.tx.options.args)
       // sample: initInput = "{\"params\":{\"name\":\"xinghuo space nft\",\"symbol\":\"S\",\"tokenUri\":\"https://gateway.pinata.cloud/ipfs/QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/6476\"}}" 
     }
 

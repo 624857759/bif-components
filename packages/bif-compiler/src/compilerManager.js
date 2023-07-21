@@ -13,8 +13,10 @@ export class PlatonCompilerManager extends CompilerManager {
 
     if (platform.isDesktop) {
       this.solImage = 'caictdevelop/bif-solidity:v0.4.26'
+      this.cppImage = 'caictdevelop/bifchain-wasm-cdt'
     } else {
       this.solImage = 'harbor.teleinfo.cn/xinghuo/solidity:1.0.0'
+      this.cppImage = 'caictdevelop/bifchain-wasm-cdt'
     }
   }
 
@@ -75,9 +77,9 @@ export class PlatonCompilerManager extends CompilerManager {
     }
 
     if (settings.language === 'cpp') {
-      image = `caictdevelop/bifchain-wasm-cdt:latest`
+      image = this.cppImage
       cmd = `'pwd && ls && /home/app/bifchain-wasm-cdt/build/bin/wasmio-cpp ${settings.main} && ls &&  pwd && python2 /home/app/bifchain-wasm-cdt/wasm_content_to_base64.py helloworld.wasm -> output.bin'`
-    } else {
+    } else if (settings.language === 'solidity') {
       image = this.solImage
       cmd = `'/root/solidity/build/solc/solc --bin --abi '${settings.main}' -o build/contracts --overwrite --metadata'`
     }
@@ -88,6 +90,7 @@ export class PlatonCompilerManager extends CompilerManager {
 
     const result = await CompilerManager.terminal.exec(cmd, {
       image,
+      mainFile: settings.main
     })
 
     CompilerManager.button.setState({ building: false })
@@ -132,7 +135,7 @@ export class PlatonCompilerManager extends CompilerManager {
       `-v "${projectDir}:${projectDir}"`,
       '-v "/var/run/docker.sock:/var/run/docker.sock"',
       `-w "${projectDir}"`,
-      'caictdevelop/bifchain-wasm-cdt:latest',
+      `'${this.cppImage}'`,
       '/bin/bash -xc',
       `"/home/app/bifchain-wasm-cdt/build/bin/wasmio-cpp  ${main} && python2 /home/app/bifchain-wasm-cdt/wasm_content_to_base64.py helloworld.wasm -> output.bin"`,
     ]

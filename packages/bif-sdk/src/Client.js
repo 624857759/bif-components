@@ -29,7 +29,7 @@ export default class BIFClient {
 		}
 	}
 
-	async checkAddress() {
+	async checkAddress(addr) {
 		return window.bifSDK.keypair.isAddress(addr)
 	}
 
